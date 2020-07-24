@@ -47,6 +47,19 @@ const addPost = async ({ request, response }: { request: any; response: any }) =
     response.body = newPost
 }
 
-
+const updatePost = async ({ request, params, response }: { request: any; params: { isbn: string }; response: any }) => {
+    let post: Post | undefined = searchPostByIsbn(params.isbn);
+    if (post) {
+        const body = await request.body();
+        const updateInfos: { author?: string; title?: string; body?: string } = body.value
+        post = { ...post, ...updateInfos }
+        posts = [...posts.filter(post => post.isbn !== params.isbn), post];
+        response.status = 200
+        response.body = { message: 'OK' }
+    } else {
+        response.status = 404;
+        response.body = { message: 'Post not found' }
+    }
+}
 
 export { getPosts, getPost, addPost }
