@@ -64,11 +64,15 @@ const updatePost = async (
   if (post) {
     const body = await request.body();
     const updateInfos: { author?: string; title?: string; body?: string } =
-      body.value;
-    post = { ...post, ...updateInfos };
-    posts = [...posts.filter((post) => post.isbn !== params.isbn), post];
+      await body.value;
+    let newpost = { ...post, ...updateInfos };
+    posts = [
+      ...posts.filter((article) => article.isbn !== params.isbn),
+      newpost,
+    ];
+
     response.status = 200;
-    response.body = { message: "OK" };
+    response.body = posts;
   } else {
     response.status = 404;
     response.body = { message: "Post not found" };
